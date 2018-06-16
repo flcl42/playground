@@ -19,6 +19,12 @@ namespace Tests
             Assert.IsTrue(a.GetType().IsValueType);
             Assert.IsTrue(t.GetType().IsClass);
             (string a, int b, object notC) d = c;
+            (string x, string y) = AbMethod();
+        }
+
+        private (string x, string y) AbMethod()
+        {
+            return default;
         }
 
         private (string a, int b, object c) foo(
@@ -32,6 +38,31 @@ namespace Tests
         public void DefaultCalls()
         {
             foo(default);
+            var i = 1;
+            switch(i){
+                case 2: break;
+                // doesn't work
+                //case (default): break;
+                default : break;
+            }
+        }
+
+        [TestMethod]
+        public void Discards()
+        {
+            var result = int.TryParse("42", out int i);
+            result = int.TryParse("42", out _);
+        }
+
+        [TestMethod]
+        public void Discards2()
+        {
+            bool _ = false, v = false;
+            if(bool.TryParse("true", out var _))            
+            {
+                v = _;
+                Assert.IsFalse(v); // !
+            }
         }
     }
 }
